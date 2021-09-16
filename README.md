@@ -1,5 +1,5 @@
 # WesternStandoff
-Made based off a request on the Bukkit Forums
+Made based off a request on the Bukkit Forums: https://bukkit.org/threads/cowboy-duel-plugin.493024/
 
 All of these require players to have the permission to use them.
 
