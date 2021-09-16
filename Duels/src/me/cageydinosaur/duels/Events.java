@@ -8,6 +8,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -95,9 +97,67 @@ public class Events implements Listener {
 		}
 	}
 
-	private static double time() {
-		double time = 0;
-		time = System.currentTimeMillis();
-		return time;
-	}
+	 @EventHandler
+	    public void onPlayerQuit(PlayerQuitEvent event) {
+	        // get the player
+	        Player player = event.getPlayer();
+	        Player victor = null;
+	        Player loser = null;
+	        // remove all queued duels this player is a part of
+	        Duel.deleteDuelsWhereInvolved(plugin.queuedDuels, player);
+	        // if they are in an ongoing duel, we do more stuff
+	        if (Duel.involvedInDuel(plugin.ongoingDuels, player)) {
+	            // get the specific duel
+	            for (int i = 0; i < plugin.ongoingDuels.size(); i++) {
+	                Duel d = plugin.ongoingDuels.get(i);
+	                if (player == d.getCallingPlayer()) {
+	                    victor = d.getChallengedPlayer();
+	                    loser = player;
+	                    Duel.endDuel(loser, victor);
+	                }
+	                if (player == d.getChallengedPlayer()) {
+	                    victor = d.getCallingPlayer();
+	                    loser = player;
+	                    plugin.ongoingDuels.remove(d);
+	                    Duel.endDuel(loser, victor);
+	                }
+	            }
+	        }
+	        if (Duel.involvedInDuel(plugin.aboutToStart, player)) {
+	            // get the specific duel
+	            for (int i = 0; i < plugin.aboutToStart.size(); i++) {
+	                Duel d = plugin.aboutToStart.get(i);
+	                if (player == d.getCallingPlayer()) {
+	                    victor = d.getChallengedPlayer();
+	                    loser = player;
+	                    Duel.endDuel(loser, victor);
+	                }
+	                if (player == d.getChallengedPlayer()) {
+	                    victor = d.getCallingPlayer();
+	                    loser = player;
+	                    plugin.aboutToStart.remove(d);
+	                    Duel.endDuel(loser, victor);
+	                }
+	            }
+	        }
+	        if (Duel.involvedInDuel(plugin.aboutToStartTwo, player)) {
+	            // get the specific duel
+	            for (int i = 0; i < plugin.aboutToStartTwo.size(); i++) {
+	                Duel d = plugin.aboutToStartTwo.get(i);
+	                if (player == d.getCallingPlayer()) {
+	                    victor = d.getChallengedPlayer();
+	                    loser = player;
+	                    Duel.endDuel(loser, victor);
+	                }
+	                if (player == d.getChallengedPlayer()) {
+	                    victor = d.getCallingPlayer();
+	                    loser = player;
+	                    plugin.aboutToStartTwo.remove(d);
+	                    Duel.endDuel(loser, victor);
+	                }
+	            }
+	        }
+	        plugin.getServer().broadcastMessage(ChatColor.GREEN + victor.getDisplayName() + " has defeated "
+					+ loser.getDisplayName() + " in a duel!");
+	    }
 }

@@ -105,6 +105,7 @@ public class Duel {
 			//challengedPlayerState.restore();
 			// move this duel to resolvedDuels
 			
+			
 		}
 
 	}
