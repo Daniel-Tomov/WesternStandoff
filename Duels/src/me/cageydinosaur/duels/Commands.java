@@ -34,10 +34,15 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(ChatColor.GREEN + "/duel confirm - Confirm when you are ready to duel");
 				sender.sendMessage(ChatColor.RED + "/duel cancel - Cancel the duel");
 			} else if (args.length > 0) {
+				if (!sender.hasPermission("duel.reload")) {
+					sender.sendMessage(ChatColor.RED + "You do not have permission to use that!");
+					return true;
+				}
 				if (args[0].equalsIgnoreCase("reload")) {
 					plugin.reloadConfig();
 					sender.sendMessage("Reloaded the config");
 					return true;
+					
 				} else if (args[0].equalsIgnoreCase("accept")) {
 					Player challengedPlayer = (Player) sender;
 					Player callingPlayer = null;

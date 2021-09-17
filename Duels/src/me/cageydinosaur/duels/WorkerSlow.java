@@ -45,7 +45,7 @@ public class WorkerSlow implements Runnable {
 
 			
 
-						if (triangle > 20 || triangle < -20) {
+						if (triangle > plugin.autoConfDis() || triangle < -(plugin.autoConfDis())) {
 							Duel.beforeDuel();
 							Duel duel = Duel.getDuel(plugin.aboutToStart, callingPlayer, challengedPlayer);
 							plugin.aboutToStartTwo.add(duel);
@@ -56,10 +56,8 @@ public class WorkerSlow implements Runnable {
 							// ((Math.abs(Math.rint(triangle - 20)))) + " more blocks");
 							// challengedPlayer.sendMessage(ChatColor.GREEN + "Move " +
 							// ((Math.abs(Math.rint(triangle - 20)))) + " more blocks");=
-							callingPlayer.sendTitle(ChatColor.DARK_RED + "Move "
-									+ ((Math.abs(Math.rint(triangle - 20)))) + " more blocks", "", 5, 10, 5);
-							challengedPlayer.sendTitle(ChatColor.DARK_RED + "Move "
-									+ ((Math.abs(Math.rint(triangle - 20)))) + " more blocks", "", 5, 10, 5);
+							callingPlayer.sendTitle(plugin.chat(plugin.customDisMsg().replace("{distance}", Double.toString(Math.abs(Math.rint(triangle - plugin.autoConfDis()))))), "", 5, 10, 5);
+							challengedPlayer.sendTitle(plugin.chat(plugin.customDisMsg().replace("{distance}", Double.toString(Math.abs(Math.rint(triangle - plugin.autoConfDis()))))), "", 5, 10, 5);
 						}
 					}
 				}
@@ -82,13 +80,11 @@ public class WorkerSlow implements Runnable {
 					 * Double.toString(Math.floor(currentTime)));
 					 * callingPlayer.sendMessage("Subtracted " + Double.toString(timeTill));
 					 */
-					if (timeTill < EXPIRE_TIME) {
-						callingPlayer.sendMessage(
-								ChatColor.GREEN + "Get ready! Time until duel: " + (5 - Math.round(timeTill)));
-						challengedPlayer.sendMessage(
-								ChatColor.GREEN + "Get ready! Time until duel: " + (5 - Math.round(timeTill)));
+					if (timeTill < plugin.countDown()) {
+						callingPlayer.sendMessage(plugin.chat(plugin.CusCountDownMsg().replace("{time}", Double.toString((plugin.countDown() - Math.round(timeTill))))));
+						challengedPlayer.sendMessage(plugin.chat(plugin.CusCountDownMsg().replace("{time}", Double.toString((plugin.countDown() - Math.round(timeTill))))));
 
-					} else if (timeTill < 10 && timeTill > 4.5) {
+					} else if (timeTill < (plugin.countDown() + 5) && timeTill > plugin.countDown()) {
 
 						Duel.beginDuel();
 						plugin.ongoingDuels.add(duel);

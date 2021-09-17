@@ -37,7 +37,7 @@ public class Events implements Listener {
 			Player challengedPlayer = null;
 			Player victor = null;
 
-			if (Duel.involvedInDuel(plugin.ongoingDuels, loser)) {
+			if (Duel.involvedInDuel(plugin.ongoingDuels, loser) || Duel.involvedInDuel(plugin.aboutToStart, loser) || Duel.involvedInDuel(plugin.aboutToStartTwo, loser)) {
 				if (e.getCause() == DamageCause.FALL) {
 					e.setCancelled(true);
 					return;
@@ -60,8 +60,7 @@ public class Events implements Listener {
 					return;
 				}
 				Duel.endDuel(callingPlayer, challengedPlayer);
-				plugin.getServer().broadcastMessage(ChatColor.GREEN + victor.getDisplayName() + " has defeated "
-						+ loser.getDisplayName() + " in a duel!");
+				plugin.getServer().broadcastMessage(plugin.chat((plugin.killMsg()).replace("{victor}", victor.getName()).replace("{loser}", loser.getName())));
 				Duel duel = Duel.getDuel(plugin.ongoingDuels, callingPlayer, challengedPlayer);
 				plugin.ongoingDuels.remove(duel);
 				return;
@@ -122,6 +121,8 @@ public class Events implements Listener {
 	                    Duel.endDuel(loser, victor);
 	                }
 	            }
+	            plugin.getServer().broadcastMessage(plugin.chat((plugin.killMsg()).replace("{victor}", victor.getName()).replace("{loser}", loser.getName())));
+	            return;
 	        }
 	        if (Duel.involvedInDuel(plugin.aboutToStart, player)) {
 	            // get the specific duel
@@ -139,6 +140,8 @@ public class Events implements Listener {
 	                    Duel.endDuel(loser, victor);
 	                }
 	            }
+	            plugin.getServer().broadcastMessage(plugin.chat((plugin.killMsg()).replace("{victor}", victor.getName()).replace("{loser}", loser.getName())));
+	            return;
 	        }
 	        if (Duel.involvedInDuel(plugin.aboutToStartTwo, player)) {
 	            // get the specific duel
@@ -156,8 +159,9 @@ public class Events implements Listener {
 	                    Duel.endDuel(loser, victor);
 	                }
 	            }
+	            plugin.getServer().broadcastMessage(plugin.chat((plugin.killMsg()).replace("{victor}", victor.getName()).replace("{loser}", loser.getName())));
+	            return;
 	        }
-	        plugin.getServer().broadcastMessage(ChatColor.GREEN + victor.getDisplayName() + " has defeated "
-					+ loser.getDisplayName() + " in a duel!");
+	        
 	    }
 }

@@ -2,6 +2,7 @@ package me.cageydinosaur.duels;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,6 +30,10 @@ public class Main extends JavaPlugin {
 		// WorkerFast(this), 1, 1);
 		getServer().getScheduler().runTaskTimerAsynchronously(this, new WorkerSlow(this), 1, 20);
 	}
+	
+	public String chat (String s) {
+		return ChatColor.translateAlternateColorCodes('&', s);
+	}
 
 	public void reloadTheConfig() {
 		this.reloadConfig();
@@ -40,4 +45,26 @@ public class Main extends JavaPlugin {
 		}
 		return false;
 	}
+	
+	public String customDisMsg() {
+		return this.getConfig().getString("custom_distance_message");
+	}
+	
+	public String killMsg() {
+		return this.getConfig().getString("kill_message");
+	}
+	
+	public int autoConfDis() {
+		return this.getConfig().getInt("autoconfirm_distance");
+	}
+	
+	public int countDown() {
+		return this.getConfig().getInt("count_down");
+	}
+	
+	public String CusCountDownMsg() {
+		return this.getConfig().getString("count_down_message");
+	}
+	
+	
 }
