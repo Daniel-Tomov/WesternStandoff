@@ -16,5 +16,5 @@ All of these require players to have the permission to use them.
 /duel reload - reloads the config
 
 # Config options
-
-use_distance_to_autoconfirm - autoconfirms the duel if players are 20 blocks away from eachother. Can be toggled
+Read config.yml
+https://github.com/Daniel-Tomov/WesternStandoff/blob/main/Duels/src/config.yml
