@@ -11,8 +11,6 @@ All of these require players to have the permission to use them.
 
 /duel confirm - one of the players can decide
 
-/duel cancel - cancels the duel you are a part of
-
 /duel reload - reloads the config
 
 # Config options
