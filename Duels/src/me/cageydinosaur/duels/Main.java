@@ -19,6 +19,7 @@ public class Main extends JavaPlugin {
 
 	public ArrayList<Player> player1 = new ArrayList<Player>();
 	public ArrayList<Player> player2 = new ArrayList<Player>();
+	public ArrayList<Player> shooterNames = new ArrayList<Player>();
 
 	public void onEnable() {
 
@@ -30,41 +31,45 @@ public class Main extends JavaPlugin {
 		// WorkerFast(this), 1, 1);
 		getServer().getScheduler().runTaskTimerAsynchronously(this, new WorkerSlow(this), 1, 20);
 	}
-	
-	public String chat (String s) {
+
+	public String chat(String s) {
 		return ChatColor.translateAlternateColorCodes('&', s);
 	}
 
 	public void reloadTheConfig() {
 		this.reloadConfig();
 	}
-	
+
 	public boolean distanceMsg() {
-		if (this.getConfig().getString("use_distance_to_autoconfirm") == "true"){
-			return true;
-		}
-		return false;
+		return this.getConfig().getBoolean("use_distance_to_autoconfirm");
 	}
-	
+
 	public String customDisMsg() {
 		return this.getConfig().getString("custom_distance_message");
+	}
+
+	public int autoConfDis() {
+		return this.getConfig().getInt("autoconfirm_distance");
+	}
+
+	public int duelDis() {
+		return this.getConfig().getInt("dual_distance");
+	}
+
+	public int countDown() {
+		return this.getConfig().getInt("count_down");
+	}
+
+	public String CusCountDownMsg() {
+		return this.getConfig().getString("count_down_message");
+	}
+
+	public int duelTime() {
+		return this.getConfig().getInt("Duel_Time");
 	}
 	
 	public String killMsg() {
 		return this.getConfig().getString("kill_message");
 	}
-	
-	public int autoConfDis() {
-		return this.getConfig().getInt("autoconfirm_distance");
-	}
-	
-	public int countDown() {
-		return this.getConfig().getInt("count_down");
-	}
-	
-	public String CusCountDownMsg() {
-		return this.getConfig().getString("count_down_message");
-	}
-	
-	
+
 }

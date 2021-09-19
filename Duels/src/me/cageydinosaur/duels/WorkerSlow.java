@@ -43,8 +43,6 @@ public class WorkerSlow implements Runnable {
 										+ (callingPlayerLocZ - challengedPlayerLocZ)
 												* (callingPlayerLocZ - challengedPlayerLocZ));
 
-			
-
 						if (triangle > plugin.autoConfDis() || triangle < -(plugin.autoConfDis())) {
 							Duel.beforeDuel();
 							Duel duel = Duel.getDuel(plugin.aboutToStart, callingPlayer, challengedPlayer);
@@ -56,8 +54,18 @@ public class WorkerSlow implements Runnable {
 							// ((Math.abs(Math.rint(triangle - 20)))) + " more blocks");
 							// challengedPlayer.sendMessage(ChatColor.GREEN + "Move " +
 							// ((Math.abs(Math.rint(triangle - 20)))) + " more blocks");=
-							callingPlayer.sendTitle(plugin.chat(plugin.customDisMsg().replace("{distance}", Double.toString(Math.abs(Math.rint(triangle - plugin.autoConfDis()))))), "", 5, 10, 5);
-							challengedPlayer.sendTitle(plugin.chat(plugin.customDisMsg().replace("{distance}", Double.toString(Math.abs(Math.rint(triangle - plugin.autoConfDis()))))), "", 5, 10, 5);
+							callingPlayer
+									.sendTitle(
+											plugin.chat("§" + plugin.customDisMsg().replace("{distance}",
+													Double.toString(
+															Math.abs(Math.rint(triangle - plugin.autoConfDis()))))),
+											"", 5, 10, 5);
+							challengedPlayer
+									.sendTitle(
+											plugin.chat("§" + plugin.customDisMsg().replace("{distance}",
+													Double.toString(
+															Math.abs(Math.rint(triangle - plugin.autoConfDis()))))),
+											"", 5, 10, 5);
 						}
 					}
 				}
@@ -81,20 +89,49 @@ public class WorkerSlow implements Runnable {
 					 * callingPlayer.sendMessage("Subtracted " + Double.toString(timeTill));
 					 */
 					if (timeTill < plugin.countDown()) {
-						callingPlayer.sendMessage(plugin.chat(plugin.CusCountDownMsg().replace("{time}", Double.toString((plugin.countDown() - Math.round(timeTill))))));
-						challengedPlayer.sendMessage(plugin.chat(plugin.CusCountDownMsg().replace("{time}", Double.toString((plugin.countDown() - Math.round(timeTill))))));
+						callingPlayer.sendMessage(plugin.chat("§" + plugin.CusCountDownMsg().replace("{time}",
+								Double.toString((plugin.countDown() - Math.round(timeTill))))));
+						challengedPlayer.sendMessage(plugin.chat("§" + plugin.CusCountDownMsg().replace("{time}",
+								Double.toString((plugin.countDown() - Math.round(timeTill))))));
 
 					} else if (timeTill < (plugin.countDown() + 5) && timeTill > plugin.countDown()) {
 
 						Duel.beginDuel();
 						plugin.ongoingDuels.add(duel);
 						plugin.aboutToStartTwo.remove(duel);
+						timeCreated = System.currentTimeMillis();
 
 					}
 				}
 
 			}
 
+		}
+		if (!(plugin.ongoingDuels.isEmpty())) {
+			for (int i = 0; i < plugin.ongoingDuels.size(); i++) {
+				Duel d = plugin.ongoingDuels.get(i);
+				callingPlayer = d.getCallingPlayer();
+				challengedPlayer = d.getChallengedPlayer();
+				if (Duel.bothInvolved(plugin.ongoingDuels, callingPlayer, challengedPlayer)) {
+					Duel duel = Duel.getDuel(plugin.ongoingDuels, callingPlayer, challengedPlayer);
+					currentTime = System.currentTimeMillis();
+					timeTill = ((currentTime - timeCreated) / 1000) - plugin.countDown();
+
+					/*
+					 * Debugging callingPlayer.sendMessage("timecreated " +
+					 * Double.toString(Math.floor(timeCreated)));
+					 * callingPlayer.sendMessage("CurrentTime " +
+					 * Double.toString(Math.floor(currentTime)));
+					 * callingPlayer.sendMessage("Subtracted " + Double.toString(timeTill));
+					 */
+					
+					if ((timeTill > plugin.duelTime()) && timeTill < plugin.duelTime() + 1.3) {
+						callingPlayer.sendMessage(plugin.chat(ChatColor.RED + "You ran out of time!"));
+						challengedPlayer.sendMessage(plugin.chat(ChatColor.RED + "You ran out of time!"));
+						plugin.ongoingDuels.remove(duel);
+					}
+				}
+			}
 		}
 	}
 

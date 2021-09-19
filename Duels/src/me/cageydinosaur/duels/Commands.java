@@ -245,7 +245,7 @@ public class Commands implements CommandExecutor {
 							* (callingPlayerLocX - challengedPlayerLocX)
 							+ (callingPlayerLocZ - challengedPlayerLocZ) * (callingPlayerLocZ - challengedPlayerLocZ));
 
-					if (triangle > 10 || triangle < -10) {
+					if (triangle > plugin.duelDis() || triangle < (plugin.duelDis() * -1)) {
 						callingPlayer
 								.sendMessage(ChatColor.RED + "You are too far away from the player you want to duel!");
 						return true;
