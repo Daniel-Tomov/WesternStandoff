@@ -218,8 +218,6 @@ public class Commands implements CommandExecutor {
 						return true;
 
 					}
-				} else if (args[0].equalsIgnoreCase("cancel")) {
-					sender.sendMessage("You canceled the duel with ");
 				} else {
 					Player callingPlayer = (Player) sender;
 					Player challengedPlayer = Bukkit.getPlayer(args[0]);

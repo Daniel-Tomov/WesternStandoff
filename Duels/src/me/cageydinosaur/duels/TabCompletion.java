@@ -30,9 +30,6 @@ public class TabCompletion implements TabCompleter {
 				if (sender.hasPermission("duel.deny")) {
 					commands.add("deny");
 				}
-				if (sender.hasPermission("duel.cancel")) {
-					commands.add("cancel");
-				}
 				if (sender.hasPermission("duel.confirm")) {
 					commands.add("confirm");
 				}
