@@ -89,7 +89,7 @@ public class Commands implements CommandExecutor {
 								challengedPlayer.sendMessage(ChatColor.RED + " - " + p.getDisplayName());
 							}
 							challengedPlayer.sendMessage(
-									ChatColor.GREEN + "You must specify whose challenged you want to accept");
+									ChatColor.GREEN + "You must specify whose challenge you want to accept");
 							return true;
 						}
 						callingPlayer = Bukkit.getPlayer(args[0]);
@@ -181,7 +181,7 @@ public class Commands implements CommandExecutor {
 								challengedPlayer.sendMessage(ChatColor.RED + " - " + p.getDisplayName());
 							}
 							challengedPlayer.sendMessage(
-									ChatColor.GREEN + "You must specify whose challenged you want to deny");
+									ChatColor.GREEN + "You must specify whose challenge you want to deny");
 						}
 						callingPlayer = Bukkit.getPlayer(args[0]);
 						if (callingPlayer == null && !args[0].equals("")) {
