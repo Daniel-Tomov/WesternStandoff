@@ -1,8 +1,0 @@
-name: WesternStandoff
-version: 1.0
-main: me.cageydinosaur.duels.Main
-api-version: 1.17
-commands:
-  duel:
-    usage: /duel
-    description: Command for Duels. Enter it to see usage
