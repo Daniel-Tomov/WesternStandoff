@@ -25,6 +25,9 @@ public class Commands implements CommandExecutor {
 	@SuppressWarnings("unused")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (!sender.hasPermission("westernstandoff")) {
+			sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+		}
 		if (sender.hasPermission("westernstandoff")) {
 			if (args.length == 0) {
 				sender.sendMessage(ChatColor.GREEN + "Usage:");
