@@ -62,6 +62,7 @@ public class Events implements Listener {
 				plugin.ongoingDuels.remove(duel);
 				return;
 			}
+
 		}
 	}
 
@@ -69,34 +70,10 @@ public class Events implements Listener {
 	public void onEntityDamage(EntityDamageByEntityEvent e) {
 		if (e.getEntity() instanceof Player) {
 			Player loser = (Player) e.getEntity();
-			Player callingPlayer = null;
-			Player challengedPlayer = null;
-			Player victor = null;
 
-			if (Duel.involvedInDuel(plugin.ongoingDuels, loser) || Duel.involvedInDuel(plugin.aboutToStart, loser)
-					|| Duel.involvedInDuel(plugin.aboutToStartTwo, loser)) {
-
-				for (Duel d : plugin.ongoingDuels) {
-					if (d.getCallingPlayer() == loser) {
-						callingPlayer = loser;
-						challengedPlayer = d.getChallengedPlayer();
-						victor = d.getChallengedPlayer();
-					} else if (d.getChallengedPlayer() == loser) {
-						challengedPlayer = loser;
-						callingPlayer = d.getCallingPlayer();
-						victor = d.getCallingPlayer();
-					}
-				}
-				if (Duel.involvedInDuel(plugin.aboutToStart, victor)
-						|| Duel.involvedInDuel(plugin.aboutToStartTwo, victor)) {
-					e.setCancelled(true);
-					return;
-				}
-
-				if (plugin.player1.contains(callingPlayer) || plugin.player2.contains(challengedPlayer)) {
-					e.setCancelled(true);
-				}
-
+			if (Duel.involvedInDuel(plugin.aboutToStart, loser) || Duel.involvedInDuel(plugin.aboutToStartTwo, loser)) {
+				e.setCancelled(true);
+				return;
 			}
 		}
 		return;

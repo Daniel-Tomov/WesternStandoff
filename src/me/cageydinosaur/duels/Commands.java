@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 public class Commands implements CommandExecutor {
 
 	boolean isOnline = false;
+	Duel tmpDuel = null;
 
 	Main plugin;
 
@@ -25,7 +26,7 @@ public class Commands implements CommandExecutor {
 	@SuppressWarnings("unused")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!sender.hasPermission("westernstandoff")) {
+		if (!(sender.hasPermission("westernstandoff"))) {
 			sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
 		}
 		if (sender.hasPermission("westernstandoff")) {
@@ -37,15 +38,22 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(ChatColor.GREEN + "/duel confirm - Confirm when you are ready to duel");
 				sender.sendMessage(ChatColor.RED + "/duel cancel - Cancel the duel");
 			} else if (args.length > 0) {
-				if (!sender.hasPermission("westernstandoff.reload")) {
-					sender.sendMessage(ChatColor.RED + "You do not have permission to use that!");
+				if (args[0].equalsIgnoreCase("test")) {
+					for (Duel d : plugin.queuedDuels) {
+						sender.sendMessage(
+								d.getCallingPlayer().getDisplayName() + " " + d.getChallengedPlayer().getDisplayName());
+					}
 					return true;
 				}
 				if (args[0].equalsIgnoreCase("reload")) {
+					if (!sender.hasPermission("westernstandoff.reload")) {
+						sender.sendMessage(ChatColor.RED + "You do not have permission to use that!");
+						return true;
+					}
 					plugin.reloadConfig();
 					sender.sendMessage("Reloaded the config");
 					return true;
-					
+
 				} else if (args[0].equalsIgnoreCase("accept")) {
 					Player challengedPlayer = (Player) sender;
 					Player callingPlayer = null;
@@ -57,61 +65,89 @@ public class Commands implements CommandExecutor {
 						challengedPlayer.sendMessage(ChatColor.RED + "You are already in an ongoing Duel!");
 						return true;
 					}
-					if (!challengedPlayer.hasPermission("westernstandoff.accept")) {
-						challengedPlayer
-								.sendMessage(ChatColor.RED + "You do not have permission to accept/deny duels!");
+					if (!(challengedPlayer.hasPermission("westernstandoff.accept"))) {
+						challengedPlayer.sendMessage(ChatColor.RED + "You do not have permission to accept duels!");
 						return true;
 					}
 
 					ArrayList<Player> accept = new ArrayList<Player>();
+					accept.clear();
 					for (Duel d : plugin.queuedDuels) {
 						if (d.getChallengedPlayer() == challengedPlayer)
 							accept.add(d.getCallingPlayer());
 					}
+
 					if (accept.size() == 0) {
 						challengedPlayer.sendMessage(ChatColor.RED + "You do not have any pending duel requests!");
 						return true;
 					}
 					if (accept.size() >= 2) {
-						if (args.length == 0) {
+						if (args.length == 1) {
 							challengedPlayer
 									.sendMessage(ChatColor.GREEN + "You have been challenged by multiple people!");
 							for (Player p : accept) {
-								challengedPlayer.sendMessage(ChatColor.GREEN + " - " + p.getDisplayName());
+								challengedPlayer.sendMessage(ChatColor.RED + " - " + p.getDisplayName());
 							}
 							challengedPlayer.sendMessage(
 									ChatColor.GREEN + "You must specify whose challenged you want to accept");
+							return true;
 						}
 						callingPlayer = Bukkit.getPlayer(args[0]);
-						if (callingPlayer == null && !args[0].equals("")) {
+						if (callingPlayer == null && !args[0].equals("") && !args[0].equals("accept")) {
 							challengedPlayer
 									.sendMessage(ChatColor.RED + args[0] + " has not challenged you to a duel!");
 							return true;
-						} else if (callingPlayer == null) {
+						} else if (callingPlayer == null && !args[0].equals("accept")) {
 							challengedPlayer.sendMessage(ChatColor.RED + args[0] + " is not online");
 							return true;
 						}
+						callingPlayer = accept.get(0);
+
+						Duel duel = Duel.getDuel(plugin.queuedDuels, callingPlayer, challengedPlayer);
+						duel.accept();
+						callingPlayer.sendMessage(
+								ChatColor.GREEN + challengedPlayer.getName() + " has accepted your request");
+						challengedPlayer.sendMessage(
+								ChatColor.GREEN + "You have accepted " + callingPlayer.getName() + "'s request");
+
+						callingPlayer.sendMessage("");
+						challengedPlayer.sendMessage("");
+
+						callingPlayer.sendMessage(ChatColor.GREEN + "Find your stance. Then use " + ChatColor.RED
+								+ "/duel confirm" + ChatColor.GREEN + " to confirm.");
+						challengedPlayer.sendMessage(ChatColor.GREEN + "Find your stance. Then use " + ChatColor.RED
+								+ "/duel confirm" + ChatColor.GREEN + " to confirm.");
+
+						plugin.queuedDuels.remove(duel);
+						plugin.aboutToStart.add(duel);
+						duel.beforeDuel();
+
+						return true;
+
 					} else {
 						callingPlayer = accept.get(0);
+
+						Duel duel = Duel.getDuel(plugin.queuedDuels, callingPlayer, challengedPlayer);
+						duel.accept();
+						callingPlayer.sendMessage(
+								ChatColor.RED + challengedPlayer.getName() + ChatColor.GREEN + " has accepted your request");
+						challengedPlayer.sendMessage(
+								ChatColor.GREEN + "You have accepted " + ChatColor.RED + callingPlayer.getName() + ChatColor.GREEN + "'s request");
+
+						callingPlayer.sendMessage("");
+						challengedPlayer.sendMessage("");
+
+						callingPlayer.sendMessage(ChatColor.GREEN + "Find your stance. Then use " + ChatColor.RED
+								+ "/duel confirm" + ChatColor.GREEN + " to confirm.");
+						challengedPlayer.sendMessage(ChatColor.GREEN + "Find your stance. Then use " + ChatColor.RED
+								+ "/duel confirm" + ChatColor.GREEN + " to confirm.");
+
+						plugin.queuedDuels.remove(duel);
+						plugin.aboutToStart.add(duel);
+						duel.beforeDuel();
+
+						return true;
 					}
-					Duel duel = Duel.getDuel(plugin.queuedDuels, callingPlayer, challengedPlayer);
-					duel.accept();
-					callingPlayer.sendMessage(
-							ChatColor.GREEN + challengedPlayer.getName() + " has accepted your request  :)");
-					challengedPlayer.sendMessage(
-							ChatColor.GREEN + "You have accepted " + callingPlayer.getName() + "'s request");
-
-					callingPlayer.sendMessage("");
-					challengedPlayer.sendMessage("");
-
-					callingPlayer.sendMessage(ChatColor.GREEN + "Find your stance");
-					challengedPlayer.sendMessage(ChatColor.GREEN + "Find your stance");
-
-					plugin.queuedDuels.remove(duel);
-					plugin.aboutToStart.add(duel);
-					Duel.beforeDuel();
-
-					return true;
 				} else if (args[0].equalsIgnoreCase("deny")) {
 					Player challengedPlayer = (Player) sender;
 					Player callingPlayer = null;
@@ -123,9 +159,8 @@ public class Commands implements CommandExecutor {
 						challengedPlayer.sendMessage(ChatColor.RED + "You are already in an ongoing Duel!");
 						return true;
 					}
-					if (!challengedPlayer.hasPermission("westernstandoff.accept")) {
-						challengedPlayer
-								.sendMessage(ChatColor.RED + "You do not have permission to accept/deny duels!");
+					if (!(challengedPlayer.hasPermission("westernstandoff.deny"))) {
+						challengedPlayer.sendMessage(ChatColor.RED + "You do not have permission to deny duels!");
 						return true;
 					}
 
@@ -143,18 +178,18 @@ public class Commands implements CommandExecutor {
 							challengedPlayer
 									.sendMessage(ChatColor.GREEN + "You have been challenged by multiple people!");
 							for (Player p : deny) {
-								challengedPlayer.sendMessage(ChatColor.GREEN + " - " + p.getDisplayName());
+								challengedPlayer.sendMessage(ChatColor.RED + " - " + p.getDisplayName());
 							}
 							challengedPlayer.sendMessage(
 									ChatColor.GREEN + "You must specify whose challenged you want to deny");
 						}
 						callingPlayer = Bukkit.getPlayer(args[0]);
 						if (callingPlayer == null && !args[0].equals("")) {
-							challengedPlayer
-									.sendMessage(ChatColor.RED + args[0] + " has not challenged you to a duel!");
+							challengedPlayer.sendMessage(
+									ChatColor.RED + args[0] + ChatColor.GREEN + " has not challenged you to a duel!");
 							return true;
 						} else if (callingPlayer == null) {
-							challengedPlayer.sendMessage(ChatColor.RED + args[0] + " is not online");
+							challengedPlayer.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + " is not online");
 							return true;
 						}
 					} else {
@@ -162,8 +197,7 @@ public class Commands implements CommandExecutor {
 					}
 					Duel duel = Duel.getDuel(plugin.queuedDuels, callingPlayer, challengedPlayer);
 					duel.accept();
-					callingPlayer
-							.sendMessage(ChatColor.RED + challengedPlayer.getName() + " has denied your request  :(");
+					callingPlayer.sendMessage(ChatColor.RED + challengedPlayer.getName() + " has denied your request");
 					challengedPlayer
 							.sendMessage(ChatColor.RED + "You have denied " + callingPlayer.getName() + "'s request");
 					plugin.queuedDuels.remove(duel);
@@ -233,6 +267,12 @@ public class Commands implements CommandExecutor {
 								.sendMessage(ChatColor.RED + "You do not have the permission to send others duels!");
 						return true;
 					}
+					if (Duel.involvedInDuel(plugin.ongoingDuels, callingPlayer)
+							|| Duel.involvedInDuel(plugin.aboutToStart, callingPlayer)
+							|| Duel.involvedInDuel(plugin.aboutToStartTwo, callingPlayer)) {
+						sender.sendMessage(ChatColor.RED + "You are already in a duel!");
+						return true;
+					}
 					if (challengedPlayer == null) {
 						callingPlayer.sendMessage(ChatColor.RED + args[0] + " is not online");
 						return true;
@@ -261,23 +301,26 @@ public class Commands implements CommandExecutor {
 					}
 
 					if (!challengedPlayer.hasPermission("westernstandoff.accept")) {
-						callingPlayer.sendMessage(ChatColor.RED + args[0] + " can not accept duel offers!");
+						callingPlayer.sendMessage(
+								ChatColor.RED + args[0] + ChatColor.GREEN + " can not accept duel offers!");
 						return true;
 					}
 					if (Duel.bothInvolved(plugin.queuedDuels, callingPlayer, challengedPlayer)) {
-						callingPlayer.sendMessage(ChatColor.RED + "You have already sent a request to " + args[0]);
+						callingPlayer.sendMessage(ChatColor.RED + "You have already have a request between you and "
+								+ ChatColor.RED + args[0] + ChatColor.GREEN + ". Use " + ChatColor.RED + "/duel accept"
+								+ ChatColor.GREEN + " to accept their duel.");
 						return true;
 					}
 					if (!plugin.mutingPlayers.contains(challengedPlayer)) {
-						challengedPlayer.sendMessage(
-								ChatColor.GREEN + callingPlayer.getDisplayName() + " has challenged to a Duel!");
-						challengedPlayer.sendMessage(ChatColor.GREEN + "Accept their request with /duel accept");
+						challengedPlayer.sendMessage(ChatColor.GREEN + callingPlayer.getDisplayName()
+								+ " has challenged to a Duel! Accept their request with " + ChatColor.RED
+								+ "/duel accept");
 					}
-					callingPlayer.sendMessage(
-							ChatColor.GREEN + "You have challenged " + challengedPlayer.getName() + " to a duel!");
+					callingPlayer.sendMessage(ChatColor.GREEN + "You have challenged " + ChatColor.RED
+							+ challengedPlayer.getName() + ChatColor.GREEN + " to a duel!");
 
-					plugin.queuedDuels.add(new Duel(callingPlayer, challengedPlayer));
-
+					tmpDuel = new Duel(callingPlayer, challengedPlayer);
+					plugin.queuedDuels.add(tmpDuel);
 					return true;
 				}
 			}

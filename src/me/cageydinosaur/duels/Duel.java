@@ -30,8 +30,8 @@ public class Duel {
 
 	// basic information about the duel
 	private long timeCreated;
-	private static Player callingPlayer;
-	private static Player challengedPlayer;
+	private Player callingPlayer;
+	private Player challengedPlayer;
 	private static double duelTimeCreated;
 	public static Player victor = null;
 	public static Player loser = null;
@@ -50,12 +50,13 @@ public class Duel {
 	/*
 	 * Duels have two players involved A SharedData object is also passed in so that
 	 * the duel object can keep track of information more easily
-	 */
+	*/ 
 	public Duel(Player callingPlayer, Player challengedPlayer) {
-		Duel.callingPlayer = callingPlayer;
-		Duel.challengedPlayer = challengedPlayer;
+		this.callingPlayer = callingPlayer;
+		this.challengedPlayer = challengedPlayer;
+		this.timeCreated = System.currentTimeMillis();
 	}
-
+	
 	// fancy getters and setters
 	public boolean isAccepted() {
 		return accepted;
@@ -64,7 +65,14 @@ public class Duel {
 	public void accept() {
 		accepted = true;
 	}
+	
+	public void callingPlayer(Player callingPlyr) {
+		callingPlayer = callingPlyr;
+	}
 
+	public void challengedPlayer(Player challengedPlyr) {
+			challengedPlayer = challengedPlyr;
+	}
 	public Player getCallingPlayer() {
 		return callingPlayer;
 	}
@@ -77,7 +85,7 @@ public class Duel {
 		return ((System.currentTimeMillis() - timeCreated) >= EXPIRE_TIME);
 	}
 
-	public static void beforeDuel() {
+	public void beforeDuel() {
 		//callingPlayerState = new PlayerState(callingPlayer);
 		//challengedPlayerState = new PlayerState(challengedPlayer);
 		// send both players a cool title message
@@ -87,7 +95,7 @@ public class Duel {
 	}
 
 	// handles beginning the duel
-	public static void beginDuel() {
+	public void beginDuel() {
 		// play a cool sound ;)
 		callingPlayer.playEffect(callingPlayer.getLocation(), Effect.ENDERDRAGON_GROWL, null);
 		challengedPlayer.playEffect(challengedPlayer.getLocation(), Effect.ENDERDRAGON_GROWL, null);

@@ -36,19 +36,14 @@ public class TabCompletion implements TabCompleter {
 				if (sender.hasPermission("westernstandoff.reload")) {
 					commands.add("reload");
 				}
-				if (sender.hasPermission("westernstandoff.send")) {
-					Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
-					Bukkit.getServer().getOnlinePlayers().toArray(players);
-					for (int i = 0; i < players.length; i++) {
-						commands.add(players[i].getName());
-					}
-				}
+
 				return commands;
 			}
 		}
 
-		if (args.length == 2) {
-			Player callingPlayer = null;
+		if (args.length == 2)
+
+		{
 			Player challengedPlayer = (Player) sender;
 			ArrayList<String> accept = new ArrayList<String>();
 			for (Duel d : plugin.queuedDuels) {

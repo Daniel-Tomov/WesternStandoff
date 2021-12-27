@@ -9,7 +9,7 @@ public class WorkerSlow implements Runnable {
 	int EXPIRE_TIME = 5;
 	public static double timeCreated;
 	double currentTime;
-	double timeTill;
+	int timeTill;
 	double checkSeconds = 0;
 	double checkSecond = 0;
 
@@ -44,7 +44,7 @@ public class WorkerSlow implements Runnable {
 												* (callingPlayerLocZ - challengedPlayerLocZ));
 
 						if (triangle > plugin.autoConfDis() || triangle < -(plugin.autoConfDis())) {
-							Duel.beforeDuel();
+							d.beforeDuel();
 							Duel duel = Duel.getDuel(plugin.aboutToStart, callingPlayer, challengedPlayer);
 							plugin.aboutToStartTwo.add(duel);
 							plugin.aboutToStart.remove(duel);
@@ -79,7 +79,7 @@ public class WorkerSlow implements Runnable {
 				if (Duel.bothInvolved(plugin.aboutToStartTwo, callingPlayer, challengedPlayer)) {
 					Duel duel = Duel.getDuel(plugin.aboutToStartTwo, callingPlayer, challengedPlayer);
 					currentTime = System.currentTimeMillis();
-					timeTill = ((currentTime - timeCreated) / 1000);
+					timeTill = (int) ((currentTime - timeCreated) / 1000);
 
 					/*
 					 * Debugging callingPlayer.sendMessage("timecreated " +
@@ -96,7 +96,7 @@ public class WorkerSlow implements Runnable {
 
 					} else if (timeTill < (plugin.countDown() + 5) && timeTill > plugin.countDown()) {
 
-						Duel.beginDuel();
+						duel.beginDuel();
 						plugin.ongoingDuels.add(duel);
 						plugin.aboutToStartTwo.remove(duel);
 						timeCreated = System.currentTimeMillis();
@@ -115,7 +115,7 @@ public class WorkerSlow implements Runnable {
 				if (Duel.bothInvolved(plugin.ongoingDuels, callingPlayer, challengedPlayer)) {
 					Duel duel = Duel.getDuel(plugin.ongoingDuels, callingPlayer, challengedPlayer);
 					currentTime = System.currentTimeMillis();
-					timeTill = ((currentTime - timeCreated) / 1000) - plugin.countDown();
+					timeTill = (int) ((currentTime - timeCreated) / 1000) - plugin.countDown();
 
 					/*
 					 * Debugging callingPlayer.sendMessage("timecreated " +
