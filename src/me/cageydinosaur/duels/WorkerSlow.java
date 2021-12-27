@@ -90,9 +90,9 @@ public class WorkerSlow implements Runnable {
 					 */
 					if (timeTill < plugin.countDown()) {
 						callingPlayer.sendMessage(plugin.chat("§" + plugin.CusCountDownMsg().replace("{time}",
-								Double.toString((plugin.countDown() - Math.round(timeTill))))));
+								Integer.toString((plugin.countDown() - Math.round(timeTill))))));
 						challengedPlayer.sendMessage(plugin.chat("§" + plugin.CusCountDownMsg().replace("{time}",
-								Double.toString((plugin.countDown() - Math.round(timeTill))))));
+								Integer.toString((plugin.countDown() - Math.round(timeTill))))));
 
 					} else if (timeTill < (plugin.countDown() + 5) && timeTill > plugin.countDown()) {
 
