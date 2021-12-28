@@ -19,6 +19,8 @@ All of these require players to have the permission to use them.
 # Permissions
 westernstandoff - base command, must have to run any others
 
+westernstandoff.send - allows players to send duel requests to other players
+
 westernstandoff.accept - accept duels
 
 westernstandoff.deny - deny duels
