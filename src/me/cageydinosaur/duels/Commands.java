@@ -184,7 +184,7 @@ public class Commands implements CommandExecutor {
 									ChatColor.GREEN + "You must specify whose challenge you want to deny");
 						}
 						callingPlayer = Bukkit.getPlayer(args[0]);
-						if (callingPlayer == null && !args[0].equals("")) {
+						if (callingPlayer == null && !args[0].equals("") && !args[0].equals("deny")) {
 							challengedPlayer.sendMessage(
 									ChatColor.RED + args[0] + ChatColor.GREEN + " has not challenged you to a duel!");
 							return true;
@@ -197,9 +197,9 @@ public class Commands implements CommandExecutor {
 					}
 					Duel duel = Duel.getDuel(plugin.queuedDuels, callingPlayer, challengedPlayer);
 					duel.accept();
-					callingPlayer.sendMessage(ChatColor.RED + challengedPlayer.getName() + " has denied your request");
+					callingPlayer.sendMessage(ChatColor.RED + challengedPlayer.getName() + ChatColor.GREEN + " has denied your request");
 					challengedPlayer
-							.sendMessage(ChatColor.RED + "You have denied " + callingPlayer.getName() + "'s request");
+							.sendMessage(ChatColor.GREEN + "You have denied " + ChatColor.RED + callingPlayer.getName() + ChatColor.GREEN + "'s request");
 					plugin.queuedDuels.remove(duel);
 
 					return true;
@@ -274,7 +274,7 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 					if (challengedPlayer == null) {
-						callingPlayer.sendMessage(ChatColor.RED + args[0] + " is not online");
+						callingPlayer.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + " is not online");
 						return true;
 					}
 
@@ -306,7 +306,7 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 					if (Duel.bothInvolved(plugin.queuedDuels, callingPlayer, challengedPlayer)) {
-						callingPlayer.sendMessage(ChatColor.RED + "You have already have a request between you and "
+						callingPlayer.sendMessage(ChatColor.GREEN + "You have already have a request between you and "
 								+ ChatColor.RED + args[0] + ChatColor.GREEN + ". Use " + ChatColor.RED + "/duel accept"
 								+ ChatColor.GREEN + " to accept their duel.");
 						return true;
