@@ -1,6 +1,8 @@
 # WesternStandoff
 Made based off a request on the Bukkit Forums: https://bukkit.org/threads/cowboy-duel-plugin.493024/
 
+Made for Minecraft version 1.17. Not tested with other versions
+
 # Requiers "CrackShot" plugin to function since v2.0
 CrackShot: https://dev.bukkit.org/projects/crackshot
 
