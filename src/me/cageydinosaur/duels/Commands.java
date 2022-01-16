@@ -2,15 +2,12 @@ package me.cageydinosaur.duels;
 
 import java.util.ArrayList;
 
-import me.cageydinosaur.duels.*;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class Commands implements CommandExecutor {
 
